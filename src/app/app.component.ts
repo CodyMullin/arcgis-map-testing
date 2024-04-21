@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { ArcgisMapComponent } from './arcgis-map/arcgis-map.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, ArcgisMapComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
