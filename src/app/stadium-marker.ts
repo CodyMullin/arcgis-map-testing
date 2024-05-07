@@ -11,13 +11,13 @@ export class StadiumMarker {
 
   public generateRenderer(): GeoJSONLayer {
     this.renderer = {
-      type: "simple", // autocasts as new SimpleRenderer()
+      type: "simple",
       symbol: {
-        type: "simple-marker", // autocasts as new SimpleMarkerSymbol()
+        type: "simple-marker",
         size: 5,
         color: [0, 255, 255],
       },
-      label: "Major cities" // this will appear next to the symbol in the legend
+      label: "Major cities"
     };
 
     const layer = this.createLayer();
