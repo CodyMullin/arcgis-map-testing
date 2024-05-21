@@ -3,6 +3,10 @@ import ArcGISMap from '@arcgis/core/Map'
 import MapView from '@arcgis/core/views/MapView'
 import { StadiumMarker } from '../stadium-marker';
 import GeoJSONLayer from '@arcgis/core/layers/GeoJSONLayer';
+import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
+import Sketch from "@arcgis/core/widgets/Sketch.js";
+import * as webMercatorUtils from '@arcgis/core/geometry/support/webMercatorUtils';
+
 
 @Component({
   selector: 'arcgis-map',
@@ -12,7 +16,9 @@ import GeoJSONLayer from '@arcgis/core/layers/GeoJSONLayer';
 })
 export class ArcgisMapComponent {
   public map: ArcGISMap | null = null;
+  public mapView: MapView | null = null;
   public layer: GeoJSONLayer = new StadiumMarker().generateRenderer();
+  public graphicsLayer: GraphicsLayer = new GraphicsLayer();
 
   public ngOnInit(): void {
     this.generateMap();
@@ -23,7 +29,7 @@ export class ArcgisMapComponent {
       basemap: 'dark-gray-vector',
     })
 
-    const view = new MapView({
+    this.mapView = new MapView({
       map: this.map,
       container: 'viewDiv',
       center: [-118.244, 34.052],
@@ -32,13 +38,54 @@ export class ArcgisMapComponent {
         minZoom: 2,
         maxZoom: 23,
         snapToZoom: false,
-      }
+      },
+      ui: {
+        components: []
+      },
     })
 
-    view.when(() => {
+    this.mapView.when(() => {
       console.log("map loaded");
+      this._loadSketch();
     })
 
     this.map.add(this.layer)
+    this.map.add(this.graphicsLayer)
+  }
+
+  private _loadSketch(): void {
+    const sketch = new Sketch({
+      layer: this.graphicsLayer,
+      view: this.mapView!,
+      visibleElements: {
+        createTools: {
+          polyline: false,
+          point: false,
+          polygon: false,
+        },
+        settingsMenu: false,
+        undoRedoMenu: false,
+        selectionTools: {
+          "lasso-selection": false,
+          "rectangle-selection": false
+        }
+      }
+    });
+    
+    sketch.on('create', (res) => {
+      if (res.state === 'complete') {
+        console.log(res)
+        console.log(res.graphic.geometry.extent)
+        console.log(res.graphic.geometry.extent.center.latitude)
+        console.log(res.graphic.geometry.extent.center.longitude)
+        const latLngBounds = webMercatorUtils.webMercatorToGeographic(res.graphic.geometry.extent);
+        const nwBound = [latLngBounds.extent.xmin, latLngBounds.extent.ymax];
+        const seBound = [latLngBounds.extent.xmax, latLngBounds.extent.ymin];
+
+        console.log(nwBound, seBound);
+      }
+    })
+
+    this.mapView?.ui.add(sketch, 'top-right')
   }
 }

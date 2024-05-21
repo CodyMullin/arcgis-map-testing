@@ -5,9 +5,7 @@ export class StadiumMarker {
   public renderer!: any;
   public layer!: GeoJSONLayer;
 
-  constructor() {
-    this.generateRenderer();
-  }
+  constructor() {}
 
   public generateRenderer(): GeoJSONLayer {
     this.renderer = {
