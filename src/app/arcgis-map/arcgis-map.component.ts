@@ -3,9 +3,8 @@ import ArcGISMap from '@arcgis/core/Map'
 import MapView from '@arcgis/core/views/MapView'
 import { StadiumMarker } from '../stadium-marker';
 import GeoJSONLayer from '@arcgis/core/layers/GeoJSONLayer';
-import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
-import Sketch from "@arcgis/core/widgets/Sketch.js";
-import * as webMercatorUtils from '@arcgis/core/geometry/support/webMercatorUtils';
+import { SketchService } from '../sketch.service';
+import Zoom from '@arcgis/core/widgets/Zoom'
 
 
 @Component({
@@ -18,7 +17,10 @@ export class ArcgisMapComponent {
   public map: ArcGISMap | null = null;
   public mapView: MapView | null = null;
   public layer: GeoJSONLayer = new StadiumMarker().generateRenderer();
-  public graphicsLayer: GraphicsLayer = new GraphicsLayer();
+
+  constructor(
+    private readonly _sketchService: SketchService,
+  ){}
 
   public ngOnInit(): void {
     this.generateMap();
@@ -46,46 +48,18 @@ export class ArcgisMapComponent {
 
     this.mapView.when(() => {
       console.log("map loaded");
-      this._loadSketch();
+      
+      const zoom = new Zoom({
+        view: this.mapView!,
+        visible: true,
+      })
+      
+      this.mapView!.ui.add(zoom, 'top-right')
+      this._sketchService.loadSketch(this.mapView!);
     })
 
     this.map.add(this.layer)
-    this.map.add(this.graphicsLayer)
   }
 
-  private _loadSketch(): void {
-    const sketch = new Sketch({
-      layer: this.graphicsLayer,
-      view: this.mapView!,
-      visibleElements: {
-        createTools: {
-          polyline: false,
-          point: false,
-          polygon: false,
-        },
-        settingsMenu: false,
-        undoRedoMenu: false,
-        selectionTools: {
-          "lasso-selection": false,
-          "rectangle-selection": false
-        }
-      }
-    });
-    
-    sketch.on('create', (res) => {
-      if (res.state === 'complete') {
-        console.log(res)
-        console.log(res.graphic.geometry.extent)
-        console.log(res.graphic.geometry.extent.center.latitude)
-        console.log(res.graphic.geometry.extent.center.longitude)
-        const latLngBounds = webMercatorUtils.webMercatorToGeographic(res.graphic.geometry.extent);
-        const nwBound = [latLngBounds.extent.xmin, latLngBounds.extent.ymax];
-        const seBound = [latLngBounds.extent.xmax, latLngBounds.extent.ymin];
-
-        console.log(nwBound, seBound);
-      }
-    })
-
-    this.mapView?.ui.add(sketch, 'top-right')
-  }
+ 
 }

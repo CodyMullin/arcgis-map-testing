@@ -1,7 +1,37 @@
 @import "https://js.arcgis.com/4.28/@arcgis/core/assets/esri/themes/dark/main.css";
 
-
 .viewDiv {
   width: 100vw;
   height: 100vh;
+  padding: 0;
+  margin: 0;
+}
+
+:host::ng-deep {
+  calcite-button {
+    background-color: #292F36;
+  }
+  .esri-sketch__panel {
+    background-color: #292F36;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 32px !important;
+    margin: 0;
+    padding: 0;
+  }
+
+  .esri-sketch__tool-section {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin: 0;
+    padding: 0;
+  }
+
+  calcite-action[active] {
+    background-color: #FFD700;
+    color: #292F36;
+    border-radius: 50%;
+  }
 }

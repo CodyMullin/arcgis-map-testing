@@ -12,7 +12,7 @@ export class StadiumMarker {
       type: "simple",
       symbol: {
         type: "simple-marker",
-        size: 5,
+        size: 8,
         color: [0, 255, 255],
       },
       label: "Major cities"
@@ -26,7 +26,11 @@ export class StadiumMarker {
   public createLayer(): GeoJSONLayer {
     this.layer = new GeoJSONLayer({
       url: '/assets/ballparks.geojson',
-      renderer: this.renderer
+      renderer: this.renderer,
+      popupEnabled: true,
+      popupTemplate: {
+        title: '{Ballpark}'
+      }
     });
 
     return this.layer;
