@@ -4,7 +4,6 @@ import MapView from '@arcgis/core/views/MapView';
 import Sketch from '@arcgis/core/widgets/Sketch';
 import * as webMercatorUtils from '@arcgis/core/geometry/support/webMercatorUtils';
 
-
 @Injectable({
   providedIn: 'root'
 })
@@ -33,13 +32,13 @@ export class SketchService {
       }
     });
     
-    sketch.on('create', (res) => {
-      if (res.state === 'complete') {
-        console.log(res)
-        console.log(res.graphic.geometry.extent)
-        console.log(res.graphic.geometry.extent.center.latitude)
-        console.log(res.graphic.geometry.extent.center.longitude)
-        const latLngBounds = webMercatorUtils.webMercatorToGeographic(res.graphic.geometry.extent);
+    sketch.on('create', (event) => {
+      if (event.state === 'complete') {
+        console.log(event)
+        console.log(event.graphic.geometry.extent)
+        console.log(event.graphic.geometry.extent.center.latitude)
+        console.log(event.graphic.geometry.extent.center.longitude)
+        const latLngBounds = webMercatorUtils.webMercatorToGeographic(event.graphic.geometry.extent);
         const nwBound = [latLngBounds.extent.xmin, latLngBounds.extent.ymax];
         const seBound = [latLngBounds.extent.xmax, latLngBounds.extent.ymin];
 

@@ -34,7 +34,7 @@ export class ArcgisMapComponent {
     this.mapView = new MapView({
       map: this.map,
       container: 'viewDiv',
-      center: [-118.244, 34.052],
+      center: [-84.244, 34.052],
       zoom: 12,
       constraints: {
         minZoom: 2,
@@ -54,8 +54,8 @@ export class ArcgisMapComponent {
         visible: true,
       })
       
-      this.mapView!.ui.add(zoom, 'top-right')
       this._sketchService.loadSketch(this.mapView!);
+      this.mapView!.ui.add(zoom, 'top-right')
     })
 
     this.map.add(this.layer)

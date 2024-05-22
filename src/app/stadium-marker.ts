@@ -28,8 +28,16 @@ export class StadiumMarker {
       url: '/assets/ballparks.geojson',
       renderer: this.renderer,
       popupEnabled: true,
+      fields: [{
+        name: 'Ballpark',
+        type: 'string'
+      }, {
+        name: 'Teams',
+        type: 'string'
+      }],
       popupTemplate: {
-        title: '{Ballpark}'
+        title: '{Ballpark}',
+        content: '{Teams}',
       }
     });
 
